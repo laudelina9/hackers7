@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulador de Ciberseguridad - TP Aula</title>
+    <style>
+        :root {
+            --primary: #1877F2;
+            --whatsapp: #25D366;
+            --danger: #EA4335;
+            --instagram: #E1306C;
+            --qr-color: #4A154B;
+            --marketplace: #0084FF;
+            --spycam: #4B5563;
+            --jobscam: #0D9488;
+            --bankphish: #Eab308;
+            --prize-color: #9333EA;
+            --socialphish: #374151;
+            --dark: #333;
+            --light: #f0f2f5;
+        }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; margin: 0; padding: 15px; background-color: var(--light); color: var(--dark); }
+        .card { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.08); margin-bottom: 20px; border: 1px solid #e4e6eb; }
+        h2, h3, h4 { margin-top: 0; }
+        .btn { display: block; width: 100%; box-sizing: border-box; padding: 14px; color: white; border: none; border-radius: 8px; cursor: pointer; text-decoration: none; font-weight: bold; margin: 10px 0; text-align: center; font-size: 16px; }
+        .btn-green { background-color: var(--whatsapp); }
+        .btn-blue { background-color: var(--primary); }
+        .btn-red { background-color: var(--danger); }
+        .btn-insta { background-color: var(--instagram); }
+        .btn-qr { background-color: var(--qr-color); }
+        .btn-market { background-color: var(--marketplace); }
+        .btn-spy { background-color: var(--spycam); }
+        .btn-job { background-color: var(--jobscam); }
+        .btn-bank { background-color: var(--bankphish); color: #1e293b; }
+        .btn-prize { background-color: var(--prize-color); }
+        .btn-social { background-color: var(--socialphish); }
+        .btn-secondary { background-color: #65676B; }
+        .hidden { display: none; }
+        .alert { padding: 15px; border-radius: 8px; font-weight: bold; margin-top: 15px; line-height: 1.4; }
+        .alert-danger { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        .alert-success { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .badge { background: #e4e6eb; padding: 5px 10px; border-radius: 15px; font-size: 12px; font-weight: bold; display: inline-block; margin-bottom: 10px; }
+        input[type="text"] { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ccd0d5; border-radius: 8px; box-sizing: border-box; font-size: 14px; }
+        ol, ul { padding-left: 20px; line-height: 1.5; }
+        li { margin-bottom: 8px; }
+        
+        /* Estilos específicos de simulación del Escenario 9: Phishing en Redes */
+        .social-dm-box { border: 1px solid #e5e7eb; border-radius: 12px; background: #000; padding: 15px; margin: 15px 0; color: #fff; }
+        .social-dm-header { font-weight: bold; font-size: 14px; border-bottom: 1px solid #262626; padding-bottom: 8px; margin-bottom: 12px; text-align: center; color: #fff; }
+        .social-dm-bubble { background: #262626; border-radius: 12px; padding: 12px; font-size: 14px; line-height: 1.4; max-width: 90%; }
+        
+        /* Elementos heredados de escenarios previos */
+        .prize-box { border: 1px solid #e9d5ff; border-radius: 8px; background: #faf5ff; padding: 15px; margin: 15px 0; border-left: 5px solid var(--prize-color); color: #581c87; }
+        .bank-alert { border: 1px solid #fef08a; border-radius: 8px; background: #fefce8; padding: 15px; margin: 15px 0; border-left: 5px solid var(--bankphish); color: #713f12; }
+        .job-ad { border: 1px solid #e2e8f0; border-radius: 8px; background: #f8fafc; padding: 15px; margin: 15px 0; border-left: 5px solid var(--jobscam); }
+        .device-screen { border: 1px solid #bcbcbc; border-radius: 10px; background: #222; color: #fff; padding: 15px; margin: 15px 0; font-family: monospace; }
+        .cam-indicator { width: 12px; height: 12px; background: #39FF14; border-radius: 50%; display: inline-block; animation: blink 1.5s infinite; vertical-align: middle; margin-right: 8px; }
+        @keyframes blink { 0%, 100% { opacity: 0.3; } 50% { opacity: 1; } }
+        .chat-preview { background-color: #efeae2; border-radius: 8px; padding: 10px; margin: 15px 0; border: 1px solid #ddd; }
+        .message-in { background: white; padding: 10px; border-radius: 8px; max-width: 85%; font-size: 14px; color: var(--dark); }
+        .insta-profile { border: 1px solid #dbdbdb; border-radius: 8px; padding: 15px; background: #fff; margin: 15px 0; color: var(--dark); }
+        .qr-mockup { text-align: center; background: #fff; border: 3px dashed #ea4335; padding: 15px; border-radius: 8px; margin: 15px 0; color: var(--dark); }
+        .market-post { border: 1px solid #dbdbdb; border-radius: 8px; background: #fff; margin: 15px 0; overflow: hidden; color: var(--dark); }
+        .market-img { background: #e4e6eb; text-align: center; padding: 25px 10px; font-size: 40px; border-bottom: 1px solid #dbdbdb; }
+    </style>
+</head>
+<body>
+
+    <h2 style="text-align: center; color: var(--primary);">📱 Laboratorio de Ciberseguridad</h2>
+    <p style="text-align: center; font-size: 14px; color: #65676B;">Simulador interactivo para el trabajo práctico.</p>
+
+    <!-- PANTALLA 1: INICIO / SELECCIÓN DE ROL -->
+    <div id="pantalla-inicio" class="card">
+        <h3>¡Bienvenidos al desafío!</h3>
+        <p>Seleccioná tu rol asignado para este ejercicio de simulación:</p>
+        <button class="btn btn-red" onclick="mostrarPantalla('pantalla-roles-hacker')">Soy del Equipo Atacante (Hacker)</button>
+        <button class="btn btn-blue" onclick="chequearLinkVictima()">Soy del Equipo Víctima</button>
+    </div>
+
+    <!-- PANTALLA 2: ROLES DE HACKERS -->
+    <div id="pantalla-roles-hacker" class="card hidden">
+        <h3>Panel General de Atacantes</h3>
+        <p>Seleccioná el número de grupo que te asignó el profesor:</p>
+        
+        <button class="btn btn-green" onclick="mostrarPantalla('hacker-g1')">Grupo 1: Clonación de WhatsApp (Mundial)</button>
+        <button class="btn btn-insta" onclick="mostrarPantalla('hacker-g2')">Grupo 2: Perfil Sospechoso (Catfishing)</button>
+        <button class="btn btn-qr" onclick="mostrarPantalla('hacker-g3')">Grupo 3: Cuidado con los QR (Qshing)</button>
+        <button class="btn btn-market" onclick="mostrarPantalla('hacker-g4')">Grupo 4: Oferta Falsa (Marketplace/IG)</button>
+        <button class="btn btn-spy" onclick="mostrarPantalla('hacker-g5')">Grupo 5: La Cámara Espía (Camfecting)</button>
+        <button class="btn btn-job" onclick="mostrarPantalla('hacker-g6')">Grupo 6: El Trabajo Soñado (Falsa Oferta)</button>
+        <button class="btn btn-bank" onclick="mostrarPantalla('hacker-g7')">Grupo 7: Alerta del Banco (Phishing)</button>
+        <button class="btn btn-prize" onclick="mostrarPantalla('hacker-g8')">Grupo 8: ¡Ganaste un Premio! (Baiting)</button>
+        <button class="btn btn-social" onclick="mostrarPantalla('hacker-g9')">Grupo 9: Phishing en Redes Sociales (Meta Help)</button>
+        
+        <button class="btn btn-secondary" onclick="mostrarPantalla('pantalla-inicio')">Volver al Inicio</button>
+    </div>
+
+    <!-- =================================================== -->
+    <!-- PANALES DE CONSIGNAS PARA HACKERS                   -->
+    <!-- =================================================== -->
+    <div id="hacker-g1" class="card hidden">
+        <span class="badge">GRUPO 1: ATACANTES</span>
+        <h3>📂 Consigna e Investigación</h3><ol><li><strong>¿Cómo puede un atacante infectar un celular con un solo enlace?</strong></li></ol>
+        <button class="btn btn-red" onclick="generarLink('whatsapp-mundial', 'link-generado-g1', 'resultado-link-g1')">Generar Link Malicioso</button>
+        <div id="resultado-link-g1" class="hidden"><input type="text" id="link-generado-g1" readonly onclick="this.select()"></div>
+        <button class="btn btn-secondary" onclick="mostrarPantalla('pantalla-roles-hacker')">Atrás</button>
+    </div>
+
+    <div id="hacker-g2" class="card hidden">
+        <span class="badge" style="background: #fdf0f5; color: var(--instagram);">GRUPO 2: ATACANTES</span>
+        <h3>📂 Consigna e Investigación</h3><ol><li><strong>¿Cómo saber si un perfil en redes sociales es falso?</strong></li></ol>
+        <button class="btn btn-insta" onclick="generarLink('perfil-falso', 'link-generado-g2', 'resultado-link-g2')">Generar Link de Perfil Falso</button>
+        <div id="resultado-link-g2" class="hidden"><input type="text" id="link-generado-g2" readonly onclick="this.select()"></div>
+        <button class="btn btn-secondary" onclick="mostrarPantalla('pantalla-roles-hacker')">Atrás</button>
+    </div>
+
+    <div id="hacker-g3" class="card hidden">
+        <span class="badge" style="background: #f4eaf5; color: var(--qr-color);">GRUPO 3: ATACANTES</span>
+        <h3>📂 Consigna e Investigación</h3><ol><li><strong>¿Qué riesgos puede haber al escanear un código QR desconocido?</strong></li></ol>
+        <button class="btn btn-qr" onclick="generarLink('qr-falso', 'link-generado-g3', 'resultado-link-g3')">Generar Link de QR Falso</button>
+        <div id="resultado-link-g3" class="hidden"><input type="text" id="link-generado-g3" readonly onclick="this.select()"></div>
+        <button class="btn btn-secondary" onclick="mostrarPantalla('pantalla-roles-hacker')">Atrás</button>
+    </div>
+
+    <div id="hacker-g4" class="card hidden">
+        <span class="badge" style="background: #e8f4ff; color: var(--marketplace);">GRUPO 4: ATACANTES</span>
+        <h3>📂 Consigna e Investigación</h3><ol><li><strong>¿Qué señales indican que una oferta en internet es estafa?</strong></li></ol>
+        <button class="btn btn-market" onclick="generarLink('oferta-falsa', 'link-generado-g4', 'resultado-link-g4')">Generar Link de Oferta Engañosa</button>
+        <div id="resultado-link-g4" class="hidden"><input type="text" id="link-generado-g4" readonly onclick="this.select()"></div>
+        <button class="btn btn-secondary" onclick="mostrarPantalla('pantalla-roles-hacker')">Atrás</button>
+    </div>
+
+    <div id="hacker-g5" class="card hidden">
+        <span class="badge" style="background: #eef2f6; color: var(--spycam);">GRUPO 5: ATACANTES</span>
+        <h3>📂 Consigna e Investigación</h3><ol><li><strong>¿Por qué podría encenderse la cámara de un dispositivo sin permiso?</strong></li></ol>
+        <button class="btn btn-spy" onclick="generarLink('camara-espia', 'link-generado-g5', 'resultado-link-g5')">Generar Link de Espionaje</button>
+        <div id="resultado-link-g5" class="hidden"><input type="text" id="link-generado-g5" readonly onclick="this.select()"></div>
+        <button class="btn btn-secondary" onclick="mostrarPantalla('pantalla-roles-hacker')">Atrás</button>
+    </div>
+
+    <div id="hacker-g6" class="card hidden">
+        <span class="badge" style="background: #f0fdfa; color: var(--jobscam);">GRUPO 6: ATACANTES</span>
+        <h3>📂 Consigna e Investigación</h3><ol><li><strong>¿Qué banderas rojas tiene una falsa propuesta de trabajo?</strong></li></ol>
+        <button class="btn btn-job" onclick="generarLink('trabajo-falso', 'link-generado-g6', 'resultado-link-g6')">Generar Link de Trabajo Falso</button>
+        <div id="resultado-link-g6" class="hidden"><input type="text" id="link-generado-g6" readonly onclick="this.select()"></div>
+        <button class="btn btn-secondary" onclick="mostrarPantalla('pantalla-roles-hacker')">Atrás</button>
+    </div>
+
+    <div id="hacker-g7" class="card hidden">
+        <span class="badge" style="background: #fefce8; color: #854d0e;">GRUPO 7: ATACANTES</span>
+        <h3>📂 Consigna e Investigación</h3><ol><li><strong>¿Qué señales indican que una alerta bancaria es falsa?</strong></li></ol>
+        <button class="btn btn-bank" onclick="generarLink('banco-phishing', 'link-generado-g7', 'resultado-link-g7')">Generar Link de Phishing Bancario</button>
+        <div id="resultado-link-g7" class="hidden"><input type="text" id="link-generado-g7" readonly onclick="this.select()"></div>
+        <button class="btn btn-secondary" onclick="mostrarPantalla('pantalla-roles-hacker')">Atrás</button>
+    </div>
+
+    <div id="hacker-g8" class="card hidden">
+        <span class="badge" style="background: #faf5ff; color: #6b21a8;">GRUPO 8: ATACANTES</span>
+        <h3>📂 Consigna e Investigación</h3><ol><li><strong>¿Es creíble ganar un sorteo en el que nunca te anotaste?</strong></li></ol>
+        <button class="btn btn-prize" onclick="generarLink('premio-falso', 'link-generado-g8', 'resultado-link-g8')">Generar Link de Falso Premio</button>
+        <div id="resultado-link-g8" class="hidden"><input type="text" id="link-generado-g8" readonly onclick="this.select()"></div>
+        <button class="btn btn-secondary" onclick="mostrarPantalla('pantalla-roles-hacker')">Atrás</button>
+    </div>
+
+    <!-- PANEL ESPECÍFICO HACKER: GRUPO 9 -->
+    <div id="hacker-g9" class="card hidden">
+        <span class="badge" style="background: #e1f5fe; color: var(--primary);">GRUPO 9: ATACANTES</span>
+        <h3>📂 Consigna e Investigación</h3>
+        <p>Resuelvan estas preguntas en su carpeta mientras analizan el ataque:</p>
+        <ol>
+            <li><strong>¿Cómo podemos verificar si una cuenta corporativa en redes sociales es real u oficial?</strong> (Investigar la insignia de verificación, cantidad de seguidores reales, historial de nombres anteriores del perfil y si los canales formales de soporte usan DMs para problemas técnicos).</li>
+            <li><strong>¿Qué riesgos corrés al hacer clic en enlaces externos provistos por chats privados de desconocidos y loguear tus datos?</strong> (Pérdida absoluta del acceso a la cuenta, secuestro de identidad digital para estafar a tus propios contactos y posible filtración de datos privados).</li>
+        </ol>
+        <hr style="border:0; border-top:1px solid #eee; margin:20px 0;">
+        <h3>🚀 Enviar Alerta Falsa de Soporte (Social Phishing)</h3>
+        <p>Generá el link de intimidación para enviárselo a tu compañero víctima.</p>
+        <button class="btn btn-social" onclick="generarLink('redes-phishing', 'link-generado-g9', 'resultado-link-g9')">Generar Link de Phishing de Redes</button>
+        <div id="resultado-link-g9" class="hidden">
+            <p><strong>Copiá este enlace y pasáselo a la víctima:</strong></p>
+            <input type="text" id="link-generado-g9" readonly onclick="this.select()">
+        </div>
+        <button class="btn btn-secondary" onclick="mostrarPantalla('pantalla-roles-hacker')" style="margin-top:15px;">Atrás</button>
+    </div>
+
+
+    <!-- =================================================== -->
+    <!-- ESCENARIOS DE VÍCTIMAS                              -->
+    <!-- =================================================== -->
+    <div id="escenario-whatsapp-mundial" class="card hidden">
+        <span class="badge" style="background: #e1f5fe; color: #0288d1;">📱 WhatsApp</span>
+        <h3>Tenés un nuevo mensaje</h3><div class="chat-preview"><div class="message-in"><strong>¡STICKERS EXCLUSIVOS! 🎟️⚽</strong></div></div>
+        <button class="btn btn-red" onclick="finalizarEscenario('caiste', '¡Peligro! Tu cuenta empezó a mandar spam.')">Hacer clic en el link</button>
+        <button class="btn btn-green" onclick="finalizarEscenario('salvado', '¡Excelente! Ignoraste el link.')">Desconfiar del mensaje</button>
+    </div>
+
+    <div id="escenario-perfil-falso" class="card hidden">
+        <span class="badge" style="background: #fdf0f5; color: var(--instagram);">📸 Red Social</span>
+        <div class="insta-profile"><p><b>@valen_v_028:</b> "Hola 😊..."</p></div>
+        <button class="btn btn-red" onclick="finalizarEscenario('caiste', '¡Cuidado! Te expusiste a una extorsión.')">Pasarle datos</button>
+        <button class="btn btn-green" onclick="finalizarEscenario('salvado', '¡Excelente! Bloqueaste al perfil.')">Bloquear perfil</button>
+    </div>
+
+    <div id="escenario-qr-falso" class="card hidden">
+        <span class="badge" style="background: #f4eaf5; color: var(--qr-color);">🍽️ QR Restaurante</span>
+        <div class="qr-mockup"><small style="color: #ea4335;">⚠️ Sticker pegado arriba.</small></div>
+        <button class="btn btn-red" onclick="finalizarEscenario('caiste', '¡Grave error! Descargaste un virus.')">Descargar app</button>
+        <button class="btn btn-green" onclick="finalizarEscenario('salvado', '¡Brillante! Los menús no exigen instalar apps.')">Avisar al mozo</button>
+    </div>
+
+    <div id="escenario-oferta-falsa" class="card hidden">
+        <span class="badge" style="background: #e8f4ff; color: var(--marketplace);">🛍️ Publicación en Redes</span>
+        <div class="market-post"><div class="market-img">📱🍏</div></div>
+        <button class="btn btn-red" onclick="finalizarEscenario('caiste', '¡Sufriste una estafa económica!')">Transferir rápido</button>
+        <button class="btn btn-green" onclick="finalizarEscenario('salvado', '¡Excelente ojo crítico!')">Desconfiar por el precio</button>
+    </div>
+
+    <div id="escenario-camara-espia" class="card hidden">
+        <span class="badge" style="background: #eef2f6; color: var(--spycam);">💻 Alerta de Sistema</span>
+        <div class="device-screen"><p><span class="cam-indicator"></span> <b>[CÁMARA EN USO ACTIVO]</b></p></div>
+        <button class="btn btn-red" onclick="finalizarEscenario('caiste', '¡Fuiste espiado/a en tiempo real!')">Ignorar la luz verde</button>
+        <button class="btn btn-green" onclick="finalizarEscenario('salvado', '¡Excelente protocolo de reacción!')">Tapar la cámara y apagar internet</button>
+    </div>
+
+    <div id="escenario-trabajo-falso" class="card hidden">
+        <span class="badge" style="background: #f0fdfa; color: var(--jobscam);">💼 Oferta de Empleo</span>
+        <div class="job-ad"><div class="job-title">Global Task Solutions Inc.</div></div>
+        <button class="btn btn-red" onclick="finalizarEscenario('caiste', '¡Tu identidad fue comprometida!')">Enviar datos por Telegram</button>
+        <button class="btn btn-green" onclick="finalizarEscenario('salvado', '¡Excelente madurez digital!')">Dudar de beneficios</button>
+    </div>
+
+    <div id="escenario-banco-phishing" class="card hidden">
+        <span class="badge" style="background: #fefce8; color: #854d0e;">⚠️ Alerta Bancaria</span>
+        <div class="bank-alert">📬 De: seguridad@banco-verificaciones.net</div>
+        <button class="btn btn-red" onclick="finalizarEscenario('caiste', '¡Tus cuentas bancarias fueron vaciadas!')">Hacer clic de inmediato</button>
+        <button class="btn btn-green" onclick="finalizarEscenario('salvado', '¡Excelente nivel de prevención!')">Cerrar el mensaje y dudar</button>
+    </div>
+
+    <div id="escenario-premio-falso" class="card hidden">
+        <span class="badge" style="background: #faf5ff; color: #6b21a8;">🎁 Notificación de Sorteo</span>
+        <div class="prize-box">📧 Remitente: promociones-ganadores-latam@sorteos-directos.com</div>
+        <button class="btn btn-red" onclick="finalizarEscenario('caiste', '¡Regalaste tu identidad y datos de tarjetas!')">Reclarmar premio rápido</button>
+        <button class="btn btn-green" onclick="finalizarEscenario('salvado', '¡Excelente pensamiento crítico!')">Borrar el correo de inmediato</button>
+    </div>
+
+    <!-- ESCENARIO VÍCTIMA 9: PHISHING EN REDES SOCIALES -->
+    <div id="escenario-redes-phishing" class="card hidden">
+        <span class="badge" style="background: #fdf0f5; color: var(--instagram);">📸 Mensaje Directo (DM)</span>
+        <h3>Notificación de Infracción de Cuenta</h3>
+        <p>Estás navegando en Instagram y recibís una notificación por mensaje privado de un perfil cuyo nombre es <b>@meta_help_center_support_39</b>, con un logo oficial como foto de perfil:</p>
+        
+        <div class="social-dm-box">
+            <div class="social-dm-header">💬 Chat con meta_help_center_support_39</div>
+            <div class="social-dm-bubble">
+                <b>AVISO DE SUSPENSIÓN INMEDIATA ⚠️</b><br>
+                Hemos detectado múltiples denuncias por violación de derechos de autor e infracción de las Normas de la Comunidad en las últimas publicaciones de su cuenta.
+                <br><br>
+                Si considera que esto es un error, dispone de un plazo máximo de <b>24 horas</b> para verificar la propiedad de su cuenta y apelar la decisión. De lo contrario, su perfil será <b>ELIMINADO PERMANENTEMENTE</b>.
+                <br><br>
+                Ingrese aquí para iniciar la apelación de seguridad:<br>
+                🔗 <span style="color: #0084FF; text-decoration: underline;">https://meta-help-security-appeal.xyz/login</span>
+            </div>
+        </div>
+
+        <h4>¿Cómo reaccionás ante esta advertencia de cierre?</h4>
+        <button class="btn btn-red" onclick="finalizarEscenario('caiste', '¡Tu cuenta de Instagram fue secuestrada! El enlace te llevó a una pantalla de inicio de sesión idéntica a la original. Al poner tu usuario y contraseña, el atacante cambió instantáneamente el correo de recuperación, el teléfono y activó la autenticación en dos pasos. Ahora usará tu perfil para mandar estafas de inversiones falsas o préstamos de dinero a todos tus amigos y seguidores.')">Hacer clic de urgencia en el enlace e iniciar sesión para proteger la cuenta</button>
+        
+        <button class="btn btn-green" onclick="finalizarEscenario('salvado', '¡Excelente protección de tu identidad digital! Notaste las banderas rojas críticas: el perfil no tiene la insignia azul de verificación de Meta, el nombre de usuario tiene números al azar, el enlace no pertenece al dominio oficial (.instagram.com o .meta.com) y las plataformas jamás notifican cierres de cuenta por mensaje privado (DM). Denunciaste la cuenta por suplantación de identidad.')">Ignorar y denunciar la cuenta, sabiendo que el soporte real nunca usa mensajes directos privados para reportar problemas de seguridad</button>
+    </div>
+
+
+    <!-- PANTALLA DE RESULTADO FINAL -->
+    <div id="pantalla-resultado" class="card hidden">
+        <div id="alerta-resultado" class="alert"></div>
+        <p id="texto-resultado" style="font-size: 15px; line-height: 1.5; margin: 15px 0;"></p>
+        <button class="btn btn-blue" onclick="reiniciarSimulador()">Volver al Menú Principal</button>
+    </div>
+
+    <!-- LÓGICA DE JUEGO (JAVASCRIPT) -->
+    <script>
+        function mostrarPantalla(id) {
+            const pantallas = [
+                'pantalla-inicio', 'pantalla-roles-hacker', 'hacker-g1', 'hacker-g2', 'hacker-g3', 'hacker-g4', 'hacker-g5', 'hacker-g6', 'hacker-g7', 'hacker-g8', 'hacker-g9',
+                'escenario-whatsapp-mundial', 'escenario-perfil-falso', 'escenario-qr-falso', 'escenario-oferta-falsa', 'escenario-camara-espia', 'escenario-trabajo-falso', 'escenario-banco-phishing', 'escenario-premio-falso', 'escenario-redes-phishing', 'pantalla-resultado'
+            ];
+            pantallas.forEach(p => {
+                const el = document.getElementById(p);
+                if(el) el.classList.add('hidden');
+            });
+            document.getElementById(id).classList.remove('hidden');
+        }
+
+        function generarLink(tipoAtaque, inputId, resultadoId) {
+            const urlBase = window.location.href.split('?')[0];
+            const linkCompleto = urlBase + '?ataque=' + tipoAtaque;
+            
+            document.getElementById(inputId).value = linkCompleto;
+            document.getElementById(resultadoId).classList.remove('hidden');
+        }
+
+        function chequearLinkVictima() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const ataque = urlParams.get('ataque');
+            
+            if (ataque === 'whatsapp-mundial') { mostrarPantalla('escenario-whatsapp-mundial'); }
+            else if (ataque === 'perfil-falso') { mostrarPantalla('escenario-perfil-falso'); }
+            else if (ataque === 'qr-falso') { mostrarPantalla('escenario-qr-falso'); }
+            else if (ataque === 'oferta-falsa') { mostrarPantalla('escenario-oferta-falsa'); }
+            else if (ataque === 'camara-espia') { mostrarPantalla('escenario-camara-espia'); }
+            else if (ataque === 'trabajo-falso') { mostrarPantalla('escenario-trabajo-falso'); }
+            else if (ataque === 'banco-phishing') { mostrarPantalla('escenario-banco-phishing'); }
+            else if (ataque === 'premio-falso') { mostrarPantalla('escenario-premio-falso'); }
+            else if (ataque === 'redes-phishing') { mostrarPantalla('escenario-redes-phishing'); }
+            else {
+                alert('⚠️ No abriste un link de ataque válido. Tu compañero Atacante te tiene que pasar el enlace generado.');
+                mostrarPantalla('pantalla-inicio');
+            }
+        }
+
+        function finalizarEscenario(resultado, mensaje) {
+            mostrarPantalla('pantalla-resultado');
+            const alerta = document.getElementById('alerta-resultado');
+            
+            if (resultado === 'caiste') {
+                alerta.className = "alert alert-danger";
+                alerta.innerText = "🚨 RESULTADO: VULNERABILIDAD DETECTADA";
+            } else {
+                alerta.className = "alert alert-success";
+                alerta.innerText = "🛡️ RESULTADO: ¡SISTEMA SEGURO!";
+            }
+            document.getElementById('texto-resultado').innerText = mensaje;
+        }
+
+        function reiniciarSimulador() {
+            window.location.search = '';
+        }
+
+        window.onload = function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.has('ataque')) {
+                chequearLinkVictima();
+            }
+        }
+    </script>
+</body>
+</html>
